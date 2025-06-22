@@ -1,0 +1,19 @@
+{
+  "name": "data-modelling-workshop",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizvanJacob/raid-end-meet-aug-25.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rizvanJacob/raid-end-meet-aug-25/issues"
+  },
+  "homepage": "https://github.com/rizvanJacob/raid-end-meet-aug-25#readme",
+  "description": ""
+}
