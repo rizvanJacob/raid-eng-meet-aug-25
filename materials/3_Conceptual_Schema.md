@@ -2,6 +2,6 @@
 
 [HOME](../README.md)
 
-[PREV: Tools for Schema Design](2_Tools.md)
+[PREV: Introduction to Schema and Tools](1_Intro_Tools.md)
 
-[NEXT: Designing Logical Schema](4_Logical_Design.md)
+[NEXT: Designing Logical Schema](4_Logical_Schema.md)

@@ -1,35 +1,21 @@
 {
-  "name": "data-modelling-workshop",
+  "name": "presentation",
   "version": "1.0.0",
+  "description": "Presentation for RAiD Aug 25 Engineering Meetup. Requires python to run",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "ts-node src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install": "python3 -m venv .venv && . .venv/bin/activate && pip install mkslides",
+    "start": ".venv/bin/mkslides serve README.md"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rizvanJacob/raid-end-meet-aug-25.git"
+    "url": "git+https://github.com/rizvanJacob/raid-eng-meet-aug-25.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rizvanJacob/raid-end-meet-aug-25/issues"
+    "url": "https://github.com/rizvanJacob/raid-eng-meet-aug-25/issues"
   },
-  "homepage": "https://github.com/rizvanJacob/raid-end-meet-aug-25#readme",
-  "description": "",
-  "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.0.3",
-    "dotenv": "^16.5.0",
-    "eslint": "^9.29.0",
-    "express": "^5.1.0",
-    "install": "^0.13.0",
-    "nodemon": "^3.1.10",
-    "npm": "^11.4.2",
-    "prettier": "^3.5.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  }
+  "homepage": "https://github.com/rizvanJacob/raid-eng-meet-aug-25#readme"
 }
