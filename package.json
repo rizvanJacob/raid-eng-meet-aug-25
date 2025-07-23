@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "install": "python3 -m venv .venv && . .venv/bin/activate && pip install mkslides",
-  "serve-static": "node slides-helper/index.js",
-  "slides": ".venv/bin/mkslides serve README.md",
-  "start": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run slides\""
+    "serve-static": "node slides-helper/index.js",
+    "serve-slides": ".venv/bin/mkslides serve README.md",
+    "slides": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run serve-slides\""
   },
   "repository": {
     "type": "git",
