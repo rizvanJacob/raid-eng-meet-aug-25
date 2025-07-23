@@ -154,16 +154,16 @@ erDiagram
 - [3NF](#3nf): No transitive dependencies
 - Baseline: 3NF for all relationships
 
----
+-v-
 #### 1NF
 
 [(back)](#understanding-normalization-factors)
 
----
+-v-
 #### 2NF
 [(back)](#understanding-normalization-factors)
 
-----
+-v-
 #### 3NF
 [(back)](#understanding-normalization-factors)
 

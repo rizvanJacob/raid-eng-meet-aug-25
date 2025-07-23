@@ -1,5 +1,7 @@
 slides:
   theme: sky
+  separator_vertical: ^\s*-v-\s*$
+
 revealjs:
   width: 1500
   height: 1000
