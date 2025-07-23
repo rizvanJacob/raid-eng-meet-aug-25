@@ -1,0 +1,16 @@
+/* Center the Mermaid diagram container */
+.reveal pre code.mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0;
+  background: none;
+}
+
+/* Optional: remove default code styling */
+.reveal pre.code-wrapper {
+  background: none;
+  box-shadow: none;
+  border: none;
+}

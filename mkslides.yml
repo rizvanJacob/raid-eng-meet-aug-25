@@ -1,0 +1,14 @@
+slides:
+  theme: sky
+revealjs:
+  width: 1500
+  height: 1000
+  # center: false
+
+plugins:
+  - name: RevealMermaid
+    extra_css:
+      - http://localhost:3000/center-mermaid.css
+    extra_javascript:
+      - "https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin@11.4.1/plugin/mermaid/mermaid.js"
+      # - "https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.min.js"

@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "install": "python3 -m venv .venv && . .venv/bin/activate && pip install mkslides",
-    "start": ".venv/bin/mkslides serve README.md"
+  "serve-static": "node slides-helper/index.js",
+  "slides": ".venv/bin/mkslides serve README.md",
+  "start": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run slides\""
   },
   "repository": {
     "type": "git",
@@ -17,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/rizvanJacob/raid-eng-meet-aug-25/issues"
   },
-  "homepage": "https://github.com/rizvanJacob/raid-eng-meet-aug-25#readme"
+  "homepage": "https://github.com/rizvanJacob/raid-eng-meet-aug-25#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
 }
