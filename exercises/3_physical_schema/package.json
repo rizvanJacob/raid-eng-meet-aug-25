@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "start": "prisma db push && ts-node index.ts"
+    "start": "prisma db push && ts-node index.ts && prisma studio --browser none"
   },
   "author": "",
   "license": "ISC",
