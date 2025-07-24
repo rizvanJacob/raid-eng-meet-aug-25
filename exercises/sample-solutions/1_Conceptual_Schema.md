@@ -1,6 +1,4 @@
-# Sample Solution for Exercise 1:
-
-## Conceptual Schema for [Workshop Scenario](../Workshop-Scenario.md)
+# Sample Conceptual Schema for [Workshop Scenario](../Workshop-Scenario.md)
 
 ```mermaid
 erDiagram
