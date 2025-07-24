@@ -17,7 +17,7 @@ erDiagram
         boolean isDeleted
     }
 
-    User ||--o{ Appointment: has
+    User }o--o{ Appointment: has
     Appointment ||--|| Branch: in
 
     Camp {
