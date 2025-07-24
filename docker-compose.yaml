@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: workshop-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: workshop
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin"]
+      interval: 30s
+      timeout: 5s
+      retries: 5

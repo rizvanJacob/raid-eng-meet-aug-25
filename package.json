@@ -8,7 +8,10 @@
     "install": "python3 -m venv .venv && . .venv/bin/activate && pip install mkslides",
     "serve-static": "node slides-helper/index.js",
     "serve-slides": ".venv/bin/mkslides serve README.md",
-    "slides": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run serve-slides\""
+    "slides": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run serve-slides\"",
+    "start-3": "docker-compose down && docker-compose up -d && cd exercises/3_physical_schema && npm install && npm run start",
+    "start-4": "docker-compose down && docker-compose up -d && cd exercises/4_indexing && npm install && npm run start",
+    "start-5": "docker-compose down && docker-compose up -d && cd exercises/5_migrations && npm install && npm run start"
   },
   "repository": {
     "type": "git",
