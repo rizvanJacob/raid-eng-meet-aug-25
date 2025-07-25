@@ -307,15 +307,13 @@ model Address {
 
 - Design and implement physical schema for the [workshop scenario](materials/0_Workshop_Scenario.md)
 
-- Use Prisma to define your models
+- Use Prisma to [define your models](./exercises/3_physical_schema.prisma)
 
-- [Starter code](starter)
-
-- Define your models in the [schema](starter/prisma/schema.prisma)
+- Run `npm run start-3` to observe the schema generation
 
 - See [prisma instructions](materials/3_Prisma_Instructions.md) to generate and use the client
 
-- [Sample solution](`materials/sample-solutions/3_physical_schema.prisma`)
+- Run `npm run sample-3` to observe the [sample solution](./exercises/sample-solutions/3_physical_schema.prisma)
 
 ---
 ### Common Patterns for RSAF

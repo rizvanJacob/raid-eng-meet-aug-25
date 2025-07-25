@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "description": "Presentation for RAiD Aug 25 Engineering Meetup. Requires python to run",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "install": "python3 -m venv .venv && . .venv/bin/activate && pip install mkslides",
+    "install-slides": "python3 -m venv .venv && . .venv/bin/activate && pip install mkslides",
     "serve-static": "node slides-helper/index.js",
     "serve-slides": ".venv/bin/mkslides serve README.md",
     "slides": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run serve-slides\"",
-    "start-3": "docker-compose down && docker-compose up -d && cd exercises/3_physical_schema && npm install && npm run start",
-    "start-4": "docker-compose down && docker-compose up -d && cd exercises/4_indexing && npm install && npm run start",
-    "start-5": "docker-compose down && docker-compose up -d && cd exercises/5_migrations && npm install && npm run start"
+    "restart-db": "docker-compose down && docker-compose up -d",
+    "start-3": "prisma db push --schema=./exercises/3_physical_schema.prisma && ts-node scripts/3_physical_schema.ts && prisma studio --schema=./exercises/3_physical_schema.prisma"
   },
   "repository": {
     "type": "git",
@@ -24,9 +22,12 @@
   },
   "homepage": "https://github.com/rizvanJacob/raid-eng-meet-aug-25#readme",
   "dependencies": {
+    "@prisma/client": "^6.12.0",
     "express": "^5.1.0"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.0",
+    "prisma": "^6.12.0",
+    "ts-node": "^10.9.2"
   }
 }

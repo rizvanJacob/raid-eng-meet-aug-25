@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { PrismaClient } from "./generated/prisma/index";
+import { PrismaClient } from "../generated/prisma/client";
 import path from "path";
 
 type SchemaDefinition = {
@@ -13,7 +13,10 @@ const prisma = new PrismaClient();
 
 const main = async () => {
   prisma.$connect();
-  const sql = readFileSync(path.join(__dirname, "print-schema.sql"), "utf-8");
+  const sql = readFileSync(
+    path.join(__dirname, "../sql/print-schema.sql"),
+    "utf-8"
+  );
   var schemaPrintout = (await prisma.$queryRawUnsafe(
     sql
   )) as SchemaDefinition[];
