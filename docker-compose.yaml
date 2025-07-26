@@ -13,8 +13,6 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
-    mem_limit: 256m
-    cpus: 0.25
     command: >
       postgres
         -c shared_buffers=8MB

@@ -2,6 +2,13 @@ import { readFileSync } from "fs";
 import { PrismaClient, Status } from "../generated/prisma/client";
 import { faker } from "@faker-js/faker";
 import path from "path";
+import {
+  createQuery,
+  CreateQueryDataType,
+  createUser,
+  CreateUserDataType,
+  IdType,
+} from "./data-util";
 
 type SchemaDefinition = {
   table_schema: string;
@@ -11,31 +18,17 @@ type SchemaDefinition = {
 };
 
 const USERS_TO_SEED = 100;
-const QUERIES_TO_SEED = 10_000;
+const QUERIES_TO_SEED = 50_000;
 const QUERIES_TO_ADD = 500;
 
 const prisma = new PrismaClient();
 
-type CreateUserDataType = {
-  fullName: string;
-  contact: string;
-  email: string;
-};
-
-type idType = {
-  id: number;
-};
-
-const seedUsers = async (rows: number): Promise<{ id: number }[]> => {
+const seedUsers = async (rows: number): Promise<IdType[]> => {
   const data: CreateUserDataType[] = [];
   for (let i = 0; i < rows; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
-    data.push({
-      fullName: faker.person.fullName({ firstName, lastName }),
-      contact: faker.phone.number({ style: "international" }),
-      email: faker.internet.email({ firstName, lastName }),
-    });
+    data.push(createUser());
   }
   return prisma.user.createManyAndReturn({
     data,
@@ -44,14 +37,8 @@ const seedUsers = async (rows: number): Promise<{ id: number }[]> => {
     },
   });
 };
-type CreateQueryDataType = {
-  userId: number;
-  assigneeId?: number;
-  content: string;
-  status: Status;
-};
 
-const seedQueries = async (rows: number, userIds: { id: number }[]) => {
+const seedQueries = async (rows: number, userIds: IdType[]) => {
   const assignedRatio = 0.6;
   const assignedValues = [
     { value: true, weight: assignedRatio },
@@ -65,35 +52,13 @@ const seedQueries = async (rows: number, userIds: { id: number }[]) => {
     .slice(canQueryCutoffIndex, userIds.length - 1)
     .map(({ id }) => id);
 
-  const assignedStatusValues = Object.values(Status).filter(
-    (s) => s !== Status.unassigned
-  );
-
   const data: CreateQueryDataType[] = [];
-
-  let assigned = 0;
-  let unassigned = 0;
 
   for (let i = 0; i < rows; i++) {
     const isAssigned = faker.helpers.weightedArrayElement(assignedValues);
-
-    isAssigned ? assigned++ : unassigned++;
-
-    data.push({
-      userId: faker.helpers.arrayElement(canQuery),
-      assigneeId: isAssigned
-        ? faker.helpers.arrayElement(canBeAssigned)
-        : undefined,
-      content: faker.word.words({ count: { min: 150, max: 200 } }),
-      status: isAssigned
-        ? faker.helpers.arrayElement(assignedStatusValues)
-        : Status.unassigned,
-    });
+    data.push(createQuery(canQuery, canBeAssigned, isAssigned));
   }
 
-  console.log(
-    `Seeding ${assigned} assigned and ${unassigned} unassigned queries`
-  );
   return prisma.query.createMany({ data });
 };
 
