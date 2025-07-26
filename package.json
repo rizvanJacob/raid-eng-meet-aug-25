@@ -11,7 +11,7 @@
     "restart-db": "docker-compose down && docker-compose up -d && wait-on tcp:5432",
     "start-3": "npm run restart-db && prisma db push --schema=./exercises/3_physical_schema/schema.prisma && ts-node src/print-schema.ts && prisma studio --schema=./exercises/3_physical_schema/schema.prisma -b none",
     "sample-3": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/3_physical_schema/schema.prisma && ts-node src/print-schema.ts && prisma studio --schema=./exercises/sample-solutions/3_physical_schema/schema.prisma -b none",
-    "start-4": "npm run restart-db && prisma db push --schema=./exercises/4_indexing/schema.prisma && ts-node src/benchmarking/index.ts",
+    "start-4": "npm run restart-db && prisma db push --schema=./exercises/4_indexing/schema.prisma && ts-node src/benchmarking/index.ts  && prisma studio --schema=./exercises/sample-solutions/4_indexing/schema.prisma -b none",
     "sample-4": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/4_indexing/schema.prisma && ts-node src/benchmarking/index.ts"
   },
   "repository": {

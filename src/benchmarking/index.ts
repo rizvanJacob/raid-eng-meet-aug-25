@@ -2,10 +2,20 @@ import { PrismaClient } from "../../generated/prisma/client";
 import { findQueriesByUser, findUsers } from "./queries";
 import { seedQueries, seedUsers } from "./seed";
 
-const USERS_TO_SEED = 100;
-const QUERIES_TO_SEED = 10_000;
+const USERS_TO_SEED = 200;
+const QUERIES_TO_SEED = 100_000;
 
 export const prisma = new PrismaClient();
+
+const hasUserIdIndexOnQuery = async (): Promise<boolean> => {
+  const indexes = (await prisma.$queryRawUnsafe(
+    "SELECT indexname FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'Query'"
+  )) as { indexname: string }[];
+  return (
+    indexes.map(({ indexname }) => indexname).find((i) => i.includes("idx")) !=
+    undefined
+  );
+};
 
 const benchmarkSeeding = async () => {
   const seedLabel = `Seeded ${USERS_TO_SEED + QUERIES_TO_SEED} rows in`;
