@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://admin:password@localhost:5432/workshop"
+}
+
+model User {
+    id                      Int                     @id @default(autoincrement())
+    fullName                String
+    contact                 String                  @unique
+    email                   String                  @unique
+    appointments            Appointment[]
+    campAccesses            CampAccess[]            @relation("user")
+    sponsoredCampAccesses   CampAccess[]            @relation("sponsor")
+    approvedCampAccesses    CampAccess[]            @relation("approver")
+    queries                 Query[]                 @relation("user")
+    assignedQueries         Query[]                 @relation("assignedTo")
+    equipmentTransactions   EquipmentTransaction[]
+}
+
+model Appointment {
+    id                      Int                     @id @default(autoincrement())
+    title                   String
+    startDate               DateTime
+    endDate                 DateTime?
+    user                    User                    @relation(fields: [userId], references: [id])
+    userId                  Int
+    branch                  Branch                  @relation(fields: [branchId], references: [id])
+    branchId                Int
+}
+
+model Branch {
+    id                      Int                     @id @default(autoincrement())
+    name                    String
+    members                 Appointment[]
+    isDeleted               Boolean                 @default(false)
+}
+
+model CampAccess {
+    id                      Int                     @id @default(autoincrement())
+    startDate               DateTime
+    endDate                 DateTime
+    user                    User                    @relation(name: "user", fields: [userId], references: [id])
+    userId                  Int
+    sponsoredBy             User                    @relation(name: "sponsor", fields: [sponsorId], references: [id])
+    sponsorId               Int
+    approvedBy              User                    @relation(name: "approver", fields: [approverId], references: [id])
+    approverId              Int
+    camp                    Camp                    @relation(fields: [campId], references: [id])    
+    campId                  Int
+}
+
+model Camp {
+    id                      Int                     @id @default(autoincrement())
+    name                    String
+    addressLine1            String
+    addressLine2            String
+    postalCode              Int
+    accesses                CampAccess[]
+    isDeleted               Boolean                 @default(false)
+}
+
+model Query {
+    id                      Int                     @id @default(autoincrement())
+    user                    User                    @relation(name: "user", fields: [userId], references: [id])                    
+    userId                  Int
+    assignedTo              User?                   @relation(name:"assignedTo", fields: [assigneeId], references: [id])
+    assigneeId              Int?
+    content                 String
+    status                  Status
+
+    @@index([userId])
+}
+
+model Equipment {
+    id                      Int                     @id @default(autoincrement())
+    broughtOnCharge         EquipmentTransaction    @relation("broughtOnCharge", fields: [broughtOnChargeId], references: [id])
+    broughtOnChargeId       Int                     @unique
+    movement                EquipmentTransaction[]
+    disposal                EquipmentTransaction?   @relation("disposal", fields: [disposalId], references: [id])
+    disposalId              Int?                    @unique
+    model                   Model                   @relation(fields: [modelId], references: [id])
+    modelId                 Int
+}
+
+model EquipmentTransaction {
+    id                      Int                     @id @default(autoincrement())
+    type                    EqTransactionType
+    date                    DateTime
+    equipment               Equipment               @relation(fields: [equipmentId], references: [id])
+    equipmentId             Int
+    performedBy             User                    @relation(fields: [userId], references: [id])
+    userId                  Int
+
+    // Reverse relations for brought on charge and disposal
+    // Normally these can be safely ignored to hide them from the client
+    // However for this sample they are left there to allow prisma studio to load correctly
+    broughtOnChargeFor      Equipment?              @relation("broughtOnCharge")    //@ignore
+    disposalFor             Equipment?              @relation("disposal")           //@ignore
+}
+
+model Model {
+    id                      Int                     @id @default(autoincrement())
+    equipments              Equipment[]
+    name                    String
+    description             String
+    manufacturer            String
+}
+
+/*
+These enums demonstrate that sometimes, "String" values can and should be enumerated.
+
+However, it is generally preferable to have a table for each enum so that they can be
+changed via API or db queries without having to change the schema.
+
+For simplicity in this workshop, they are defined as enums
+*/
+enum EqTransactionType {
+    bringOnCharge
+    issuance
+    return
+    disposal
+}
+
+enum Status {
+    unassigned
+    assigned
+    responded
+    closed
+}
