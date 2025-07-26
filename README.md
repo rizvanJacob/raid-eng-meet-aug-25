@@ -15,11 +15,11 @@ _RAiD Engineering Meetup Aug 2025_
 ## Agenda
 
 1. [Introduction to Schema and Tools](#introduction-to-schema-and-tools)
-3. [Designing Conceptual Schema](materials/3_Conceptual_Schema.md)
-4. [Designing Logical Schema](materials/4_Logical_Schema.md)
-5. [Implementing Physical Schema with Prisma](materials/5_Physical_Schema.md)
-6. [Database Indexing](materials/6_Indexing.md)
-7. [Schema Change and Migrations](materials/7_Migrations.md)
+3. [Designing Conceptual Schema](#conceptual-schema)
+4. [Designing Logical Schema](#logical-schema)
+5. [Implementing Physical Schema with Prisma](#physical-schema)
+6. [Database Indexing](#indexing)
+7. [Schema Change and Migrations](#migrations)
 
 ---
 ## Instructions
@@ -347,3 +347,5 @@ model Address {
 ---
 ### Exercise 4: Compare Indexing Performance
 
+---
+### Migrations
