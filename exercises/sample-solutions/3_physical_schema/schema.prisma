@@ -68,8 +68,8 @@ model Query {
     id                      Int                     @id @default(autoincrement())
     user                    User                    @relation(name: "user", fields: [userId], references: [id])                    
     userId                  Int
-    assignedTo              User                    @relation(name:"assignedTo", fields: [assigneeId], references: [id])
-    assigneeId              Int
+    assignedTo              User?                   @relation(name:"assignedTo", fields: [assigneeId], references: [id])
+    assigneeId              Int?
     content                 String
     status                  Status
 }

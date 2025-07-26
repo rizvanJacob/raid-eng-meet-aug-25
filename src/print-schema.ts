@@ -11,8 +11,7 @@ type SchemaDefinition = {
 
 const prisma = new PrismaClient();
 
-const main = async () => {
-  prisma.$connect();
+const printSchema = async () => {
   const sql = readFileSync(
     path.join(__dirname, "../sql/print-schema.sql"),
     "utf-8"
@@ -21,6 +20,11 @@ const main = async () => {
     sql
   )) as SchemaDefinition[];
   console.table(schemaPrintout, ["table_name", "column_name", "data_type"]);
+};
+
+const main = async () => {
+  prisma.$connect();
+  await printSchema();
 };
 
 main()
