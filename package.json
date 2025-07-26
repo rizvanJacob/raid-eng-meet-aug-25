@@ -26,6 +26,7 @@
   "homepage": "https://github.com/rizvanJacob/raid-eng-meet-aug-25#readme",
   "dependencies": {
     "@prisma/client": "^6.12.0",
+    "dayjs": "^1.11.13",
     "express": "^5.1.0"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@ import { PrismaClient } from "../../generated/prisma/client";
 import { findQueriesByUser, findUsers } from "./queries";
 import { seedQueries, seedUsers } from "./seed";
 
-const USERS_TO_SEED = 200;
+const USERS_TO_SEED = 300;
 const QUERIES_TO_SEED = 100_000;
 
 export const prisma = new PrismaClient();
@@ -40,7 +40,7 @@ const benchmarkQuerying = async (
     if (queriesCompleted % intervalToPrint === 0) {
       console.timeLog(
         findQueriesLabel,
-        `(${queriesCompleted} queries completed)`
+        `(${queriesCompleted}/${timesToRepeat} rounds completed)`
       );
     }
   }
