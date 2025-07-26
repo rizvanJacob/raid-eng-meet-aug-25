@@ -1,25 +1,12 @@
 import { faker } from "@faker-js/faker";
-import { Status } from "../../generated/prisma";
+import { Prisma, Status } from "../../generated/prisma";
 import { prisma } from ".";
-
-type CreateQueryDataType = {
-  userId: number;
-  assigneeId?: number;
-  content: string;
-  status: Status;
-};
-
-type CreateUserDataType = {
-  fullName: string;
-  contact: string;
-  email: string;
-};
 
 type IdType = {
   id: number;
 };
 
-const createUser = (): CreateUserDataType => {
+const createUser = (): Prisma.UserCreateManyInput => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   return {
@@ -51,7 +38,7 @@ const createQuery = (
 };
 
 export const seedUsers = async (rows: number): Promise<IdType[]> => {
-  const data: CreateUserDataType[] = [];
+  const data: Prisma.UserCreateManyInput[] = [];
   for (let i = 0; i < rows; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
@@ -79,7 +66,7 @@ export const seedQueries = async (rows: number, userIds: IdType[]) => {
     .slice(canQueryCutoffIndex, userIds.length - 1)
     .map(({ id }) => id);
 
-  const data: CreateQueryDataType[] = [];
+  const data: Prisma.QueryCreateManyInput[] = [];
 
   for (let i = 0; i < rows; i++) {
     const isAssigned = faker.helpers.weightedArrayElement(assignedValues);
