@@ -9,6 +9,7 @@ import {
   CreateUserDataType,
   IdType,
 } from "./data-util";
+import { time } from "console";
 
 type SchemaDefinition = {
   table_schema: string;
@@ -19,7 +20,6 @@ type SchemaDefinition = {
 
 const USERS_TO_SEED = 100;
 const QUERIES_TO_SEED = 50_000;
-const QUERIES_TO_ADD = 500;
 
 const prisma = new PrismaClient();
 
@@ -62,15 +62,57 @@ const seedQueries = async (rows: number, userIds: IdType[]) => {
   return prisma.query.createMany({ data });
 };
 
+const findQueriesByStatus = async (status: Status) => {
+  return prisma.query.findMany({
+    where: {
+      status,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+
 const main = async () => {
   prisma.$connect();
   console.log(`Seeds ${QUERIES_TO_SEED} user queries with ${USERS_TO_SEED} users and benchmarks:
-    1. Time taken to retrieve queries by status
-    2. Time taken to retrieve queries by user (queried by)
-    3. Time taken to insert ${QUERIES_TO_ADD} new queries`);
+    1. Time taken to seed data (insertion)
+    2. Time taken to retrieve queries by status
+    3. Time taken to retrieve queries by user (queried by)
+    `);
+  console.log(
+    "==============================================================="
+  );
+  console.log();
 
+  const seedLabel = `Seeded ${USERS_TO_SEED + QUERIES_TO_SEED} rows in`;
+  console.time(seedLabel);
   const userIds = await seedUsers(USERS_TO_SEED);
   await seedQueries(QUERIES_TO_SEED, userIds);
+  console.timeEnd(seedLabel);
+  console.log();
+
+  const timesToQuery = 100;
+  const queryAggregateLabel = `Retrieved queries by status ${timesToQuery} times in`;
+  console.time(queryAggregateLabel);
+  for (let i = 0; i < timesToQuery; i++) {
+    for (const status of Object.values(Status)) {
+      const retrieveByStatusLabel = `> Retrieved ${status} queries (single retrieval) in`;
+      if (i === timesToQuery - 1) {
+        console.time(retrieveByStatusLabel);
+      }
+      var queries = await findQueriesByStatus(status);
+      if (i === timesToQuery - 1) {
+        console.timeLog(retrieveByStatusLabel, `(${queries.length} rows)`);
+      }
+    }
+  }
+  console.timeEnd(queryAggregateLabel);
+
+  console.log();
+  console.log(
+    "==============================================================="
+  );
 };
 
 main()

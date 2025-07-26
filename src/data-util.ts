@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/.";
+import { faker } from "@faker-js/faker";
 import { Status } from "../generated/prisma";
 
 export type CreateQueryDataType = {
