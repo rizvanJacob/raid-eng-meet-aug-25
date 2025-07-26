@@ -94,9 +94,11 @@ model EquipmentTransaction {
     performedBy             User                    @relation(fields: [userId], references: [id])
     userId                  Int
 
-    // Reverse relations for brought on charge and disposal; no need to expose for client
-    broughtOnChargeFor      Equipment?              @relation("broughtOnCharge") @ignore
-    disposalFor             Equipment?              @relation("disposal")        @ignore
+    // Reverse relations for brought on charge and disposal
+    // Normally these can be safely ignored to hide them from the client
+    // However for this sample they are left there to allow prisma studio to load correctly
+    broughtOnChargeFor      Equipment?              @relation("broughtOnCharge")    //@ignore
+    disposalFor             Equipment?              @relation("disposal")           //@ignore
 }
 
 model Model {
