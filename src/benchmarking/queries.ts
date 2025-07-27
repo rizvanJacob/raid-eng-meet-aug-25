@@ -1,5 +1,5 @@
 import { prisma } from ".";
-import { Status } from "../../generated/prisma";
+import { Prisma, Status } from "../../generated/prisma";
 
 export const findUsers = async () => {
   return prisma.user.findMany({
@@ -33,4 +33,51 @@ export const findQueriesByStatus = async (status: Status) => {
       id: true,
     },
   });
+};
+
+export const findActiveBranchNames = async () => {
+  const result = await prisma.branch.findMany({
+    where: { isDeleted: false },
+    select: { name: true },
+  });
+  return result.map(({ name }) => name);
+};
+
+export const findQueriesByActiveMembersByBranchName = async (
+  name: string,
+  limit?: number
+) => {
+  const result = await prisma.query.findMany({
+    where: {
+      user: {
+        appointments: {
+          some: {
+            branch: {
+              name,
+            },
+            endDate: {
+              gte: new Date(),
+            },
+          },
+        },
+      },
+    },
+    include: {
+      user: {
+        include: {
+          appointments: {
+            include: {
+              branch: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    take: limit,
+  });
+  return result;
 };
