@@ -395,3 +395,9 @@ model Address {
 ---
 
 ### Migrations
+
+- Track changes to the schema over time
+- Ensure data integrity during schema changes
+- Learn the basics of [migration with Prisma](https://www.prisma.io/docs/guides/data-migration)
+- Applicable to other tools like Liquibase, Flyway, or raw SQL migrations
+
