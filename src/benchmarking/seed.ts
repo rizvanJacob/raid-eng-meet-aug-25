@@ -1,8 +1,19 @@
-import { da, faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 import { Prisma, Status } from "../../generated/prisma";
 import { prisma } from ".";
 import dayjs from "dayjs";
-import { assignedQueriesRatio, canQueryRatio, deletedBranchRatio, maxApptDurationYears, minApptDurationYears, numBranches, numTitles, oldestApptYearsAgo } from "./config";
+import {
+  assignedQueriesRatio,
+  canQueryRatio,
+  concurrentAppointmentRatio,
+  deletedBranchRatio,
+  hasCurrentAppointmentRaio,
+  maxApptDurationYears,
+  minApptDurationYears,
+  numBranches,
+  numTitles,
+  oldestApptYearsAgo,
+} from "./config";
 
 const TITLES: string[] = [];
 for (let i = 0; i < numTitles; i++) {
@@ -74,71 +85,115 @@ const createAppointments = (
   activeBranchIds: number[],
   deletedBranchIds: number[]
 ): Prisma.AppointmentCreateManyInput[] => {
-  return userIds.map((userId) => {
-    const branchId = faker.helpers.arrayElement([
-      ...activeBranchIds,
-      ...deletedBranchIds,
-    ]);
-    const isDeleted = deletedBranchIds.find((id) => branchId === id);
-    const startDate = faker.date.between({
-      from: dayjs()
-        .subtract(oldestApptYearsAgo, "year")
-        .toISOString(),
-      to: dayjs().toISOString(),
-    });
-    const endDate = isDeleted
-      ? faker.date.past()
-      : dayjs(startDate)
-          .add(
-            faker.number.int({
-              min: minApptDurationYears,
-              max: maxApptDurationYears - 1,
-            }),
-            "year"
-          )
-          .add(faker.number.int(365), "day")
-          .toDate();
+  const appointments: Prisma.AppointmentCreateManyInput[] = [];
 
-    return {
-      title: faker.helpers.arrayElement(TITLES),
-      startDate,
-      endDate,
-      userId,
-      branchId,
-    };
-  });
+  const addConcurrent = (base: Prisma.AppointmentCreateManyInput) => {
+    if (Math.random() < concurrentAppointmentRatio) {
+      const concurrent = {
+        ...base,
+        title: faker.helpers.arrayElement(TITLES),
+      };
+      appointments.push(concurrent);
+    }
+  };
+
+  const addAppointment = (appt: Prisma.AppointmentCreateManyInput) => {
+    appointments.push(appt);
+    addConcurrent(appt);
+  };
+
+  for (const userId of userIds) {
+    const hasCurrentAppointment = Math.random() < hasCurrentAppointmentRaio;
+
+    let startDate = faker.date.between({
+      from: dayjs().subtract(oldestApptYearsAgo, "year").toDate(),
+      to: dayjs().toDate(),
+    });
+
+    // Main appointment loop
+    let currentStart = startDate;
+    let shouldAddNextAppointment = true;
+    while (shouldAddNextAppointment) {
+      let endDate = dayjs(currentStart)
+        .add(
+          faker.number.int({
+            min: minApptDurationYears,
+            max: maxApptDurationYears - 1,
+          }),
+          "year"
+        )
+        .add(faker.number.int(365), "day")
+        .toDate();
+
+      if (!hasCurrentAppointment) {
+        // Trim to past if needed
+        while (dayjs(endDate).isAfter(dayjs())) {
+          const durationYears = dayjs(endDate).diff(currentStart, "year");
+          if (durationYears <= 1) {
+            endDate = dayjs().subtract(1, "day").toDate();
+            break;
+          }
+          endDate = dayjs(endDate).subtract(1, "year").toDate();
+        }
+      }
+
+      const isCurrentAppointment = dayjs(endDate).isAfter(dayjs());
+      const branchId = isCurrentAppointment
+        ? faker.helpers.arrayElement(activeBranchIds)
+        : faker.helpers.arrayElement([...activeBranchIds, ...deletedBranchIds]);
+
+      const appt = {
+        title: faker.helpers.arrayElement(TITLES),
+        startDate: currentStart,
+        endDate,
+        userId,
+        branchId,
+      };
+      addAppointment(appt);
+
+      shouldAddNextAppointment = hasCurrentAppointment
+        ? dayjs(endDate).isBefore(dayjs()) // if hasCurrentAppointment, keep adding next until end date is in the future
+        : Math.random() > 0.2; // else, weighted random decision
+      currentStart = dayjs(endDate).add(1, "day").toDate(); // next appointment will start 1 day after current one ends.
+    }
+  }
+
+  return appointments;
 };
 
 export const seedUsers = async (rows: number) => {
-  return await prisma.$transaction(async (tx) => {
-    const branches = await tx.branch.createManyAndReturn({
-      data: createBranches(numBranches, deletedBranchRatio),
-    });
-    console.log(`> Seeded ${branches.length} branches`);
-    const activeBranchesIds = branches
-      .filter((branch) => !branch.isDeleted)
-      .map(({ id }) => id);
-    const deletedBranchIds = branches
-      .filter((branch) => branch.isDeleted)
-      .map(({ id }) => id);
+  return await prisma.$transaction(
+    async (tx) => {
+      const branches = await tx.branch.createManyAndReturn({
+        data: createBranches(numBranches, deletedBranchRatio),
+      });
+      console.log(`> Seeded ${branches.length} branches`);
+      const activeBranchesIds = branches
+        .filter((branch) => !branch.isDeleted)
+        .map(({ id }) => id);
+      const deletedBranchIds = branches
+        .filter((branch) => branch.isDeleted)
+        .map(({ id }) => id);
 
-    const userData: Prisma.UserCreateManyInput[] = [];
-    for (let i = 0; i < rows; i++) {
-      userData.push(createUser());
-    }
-    const userIdObjects = await tx.user.createManyAndReturn({
-      data: userData,
-      skipDuplicates: true,
-    });
-    console.log(`> Seeded ${userData.length} users`);
-    const userIds = userIdObjects.map(({ id }) => id);
+      const userData: Prisma.UserCreateManyInput[] = [];
+      for (let i = 0; i < rows; i++) {
+        userData.push(createUser());
+      }
+      const userIdObjects = await tx.user.createManyAndReturn({
+        data: userData,
+        skipDuplicates: true,
+      });
+      console.log(`> Seeded ${userData.length} users`);
+      const userIds = userIdObjects.map(({ id }) => id);
 
-    const { count: appointmentCount } = await tx.appointment.createMany({
-      data: createAppointments(userIds, activeBranchesIds, deletedBranchIds),
-    });
-    console.log(`> Seeded ${appointmentCount} appointments`);
-    return userIdObjects;
-  });
+      const { count: appointmentCount } = await tx.appointment.createMany({
+        data: createAppointments(userIds, activeBranchesIds, deletedBranchIds),
+      });
+      console.log(`> Seeded ${appointmentCount} appointments`);
+      return userIdObjects;
+    },
+    { timeout: 30_000 }
+  );
 };
 
 export const seedQueries = async (rows: number, userIds: number[]) => {
