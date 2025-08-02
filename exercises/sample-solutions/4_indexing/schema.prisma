@@ -32,6 +32,9 @@ model Appointment {
     branch                  Branch                  @relation(fields: [branchId], references: [id])
     branchId                Int
 
+    // Denormalized column that is updated by a DB trigger and partially indexed
+    // 
+    isActive                Boolean?                //@ignore
     @@index([branchId])     //depending on use case, you may wish to index userId too
 }
 
@@ -40,6 +43,8 @@ model Branch {
     name                    String
     members                 Appointment[]
     isDeleted               Boolean                 @default(false)
+
+    @@index([name])
 }
 
 model CampAccess {

@@ -387,7 +387,7 @@ model Address {
   - Query plans for retrieving queries by user
 
 - Amend the schema to improve query performance
-
+  
   - Re-run `npm run start-4` to observe the changes
 
 - Run `npm run sample-4` to observe the [sample solution](exercises/sample-solutions/4_indexing/schema.prisma)

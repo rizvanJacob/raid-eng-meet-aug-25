@@ -25,13 +25,13 @@ export const maxApptDurationYears = Number.parseInt(
 );
 export const hasCurrentAppointmentRaio = Number.parseFloat(
   process.env.HAS_CURRENT_APPOINTMENT_RATIO || "0.3"
-)
+);
 export const endPastAppointmentChainRatio = Number.parseFloat(
   process.env.END_PAST_APPOINTMENT_CHAIN_RATIO || "0.2"
-)
+);
 export const concurrentAppointmentRatio = Number.parseFloat(
   process.env.CONCURRENT_APPOINTMENT_RATIO || "0.15"
-)
+);
 
 // QUERY CONFIGRATUIONS
 export const assignedQueriesRatio = Number.parseFloat(
@@ -40,3 +40,7 @@ export const assignedQueriesRatio = Number.parseFloat(
 export const canQueryRatio = Number.parseFloat(
   process.env.CAN_QUERY_RATIO || ""
 );
+
+export const exerciseSqlDir = "../../exercises/4_indexing/sql";
+
+export const sampleSqlDir = "../../exercises/sample-solutions/4_indexing/sql";

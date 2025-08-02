@@ -1,0 +1,4 @@
+CREATE TRIGGER set_is_active
+BEFORE INSERT OR UPDATE ON "Appointment"
+FOR EACH ROW
+EXECUTE FUNCTION update_is_active();
