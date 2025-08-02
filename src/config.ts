@@ -41,6 +41,6 @@ export const canQueryRatio = Number.parseFloat(
   process.env.CAN_QUERY_RATIO || ""
 );
 
-export const exerciseSqlDir = "../../exercises/4_indexing/sql";
+export const exerciseSqlDir = "../exercises/4_indexing/sql";
 
-export const sampleSqlDir = "../../exercises/sample-solutions/4_indexing/sql";
+export const sampleSqlDir = "../exercises/sample-solutions/4_indexing/sql";

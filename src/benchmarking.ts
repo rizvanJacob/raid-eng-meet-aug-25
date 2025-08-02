@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { readdirSync, readFileSync } from "fs";
 import path from "path";
-import { PrismaClient } from "../../generated/prisma/client";
+import { PrismaClient } from "../generated/prisma/client";
 import {
   findActiveBranchNames,
   findQueriesByActiveMembersByBranchName,

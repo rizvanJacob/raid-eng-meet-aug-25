@@ -1,5 +1,5 @@
-import { prisma } from ".";
-import { Status } from "../../generated/prisma";
+import { prisma } from "./benchmarking";
+import { Status } from "../generated/prisma";
 
 export const findUsers = async () => {
   return prisma.user.findMany({

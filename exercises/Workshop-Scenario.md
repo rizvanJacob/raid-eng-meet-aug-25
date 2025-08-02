@@ -8,7 +8,7 @@ Tracks when staff joining/leave RAiD
 
 During in-processing: 
 - Record basic staff information
-    - Name
+    - Full Name
     - Position
     - Branch
 - Issue equipment

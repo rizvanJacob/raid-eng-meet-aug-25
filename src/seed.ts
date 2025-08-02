@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { Prisma, Status } from "../../generated/prisma";
-import { prisma } from ".";
+import { Prisma, Status } from "../generated/prisma";
+import { prisma } from "./benchmarking";
 import dayjs from "dayjs";
 import {
   assignedQueriesRatio,
@@ -49,7 +49,7 @@ const createUser = (): Prisma.UserCreateManyInput => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   return {
-    fullName: faker.person.fullName({ firstName, lastName }),
+    fullName: `${firstName} ${lastName}`,
     contact: faker.phone.number({ style: "international" }),
     email: faker.internet.email({
       firstName,
