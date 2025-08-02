@@ -81,10 +81,13 @@ async function executeSqlFolder(folderPath: string) {
 }
 
 const main = async () => {
-  const isSample = process.argv0 === "sample";
-
   prisma.$connect();
+
+  const isSample = process.argv[process.argv.length - 1] === "sample";
   await executeSqlFolder(isSample ? sampleSqlDir : exerciseSqlDir);
+  console.log(
+    "==============================================================="
+  );
 
   console.log(`Seeds ${queriesToSeed} user queries with ${usersToSeed} users and benchmarks:
     1. Time taken to seed data (insertion)
