@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://admin:password@localhost:5432/workshop"
+  url      = "postgresql://admin:password@localhost:5432/workshop?socket_timeout=300"
 }
 
 model User {

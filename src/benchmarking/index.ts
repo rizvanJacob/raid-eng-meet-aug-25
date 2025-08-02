@@ -1,22 +1,21 @@
-import { PrismaClient, Status } from "../../generated/prisma/client";
+import dayjs from "dayjs";
+import { PrismaClient } from "../../generated/prisma/client";
 import {
   findActiveBranchNames,
   findQueriesByActiveMembersByBranchName,
 } from "./queries";
 import { seedQueries, seedUsers } from "./seed";
+import { queriesToSeed, usersToSeed } from "./config";
 
-const USERS_TO_SEED = 600;
-const QUERIES_TO_SEED = 100_000;
-const QUERY_ROUNDS = 1;
 
 export const prisma = new PrismaClient();
 
 const benchmarkSeeding = async () => {
-  const seedLabel = `Seeded ${USERS_TO_SEED + QUERIES_TO_SEED} rows in`;
+  const seedLabel = `Seeded ${usersToSeed + queriesToSeed} rows in`;
   console.time(seedLabel);
-  const users = await seedUsers(USERS_TO_SEED);
+  const users = await seedUsers(usersToSeed);
   const userIds = users.map(({ id }) => id);
-  await seedQueries(QUERIES_TO_SEED, userIds);
+  await seedQueries(queriesToSeed, userIds);
   console.timeEnd(seedLabel);
   console.log();
 };
@@ -26,41 +25,16 @@ const benchmarkQueriesPerBranch = async (
   intervalToPrint: number
 ) => {
   const branchNames = await findActiveBranchNames();
-  const findQueriesLabel = `Retrieved queries for ${branchNames.length} branches in`;
-  console.time(findQueriesLabel);
-  let queryCount: number;
-  let uniqueUserIds: Set<number>;
-
+  const durationsMs: number[] = [];
   for (let i = 0; i < timesToRepeat; i++) {
-    const promises = branchNames.map((name) =>
-      findQueriesByActiveMembersByBranchName(name)
-    );
-    const results = await Promise.all(promises);
-
-    const queriesCompleted = i + 1;
-    if (queriesCompleted % intervalToPrint === 0) {
-      console.timeLog(
-        findQueriesLabel,
-        `(${queriesCompleted}/${timesToRepeat} rounds)`
-      );
-    }
-
-    if (i === timesToRepeat - 1) {
-      queryCount = results.reduce((prev, curr) => {
-        return prev + curr.length;
-      }, 0);
-      uniqueUserIds = results.reduce<Set<number>>((prev, curr) => {
-        curr.forEach((q) => {
-          prev.add(q.userId);
-        });
-        return prev;
-      }, new Set());
+    for (const name of branchNames) {
+      const start = dayjs();
+      await findQueriesByActiveMembersByBranchName(name);
+      durationsMs.push(dayjs().diff(start));
     }
   }
-  console.timeEnd(findQueriesLabel);
-  console.log(
-    `Retrieved ${queryCount!} queries from ${uniqueUserIds!.size} unique users`
-  );
+  console.log(`Completed ${timesToRepeat} query rounds`);
+  printDurationsStats(durationsMs);
   console.log();
 };
 
@@ -98,13 +72,13 @@ const explainAnalyzeQueriesForFirstUser = async () => {
       };
     })
     .sort((a, b) => a.queriedBy.localeCompare(b.queriedBy));
-  console.log(`(EXAMPLE) Query results of ${sampleSize} samples:`);
-  console.table(parsedForTable);
+  // console.log(`(EXAMPLE) Query results of ${sampleSize} samples:`);
+  // console.table(parsedForTable);
 };
 
 const main = async () => {
   prisma.$connect();
-  console.log(`Seeds ${QUERIES_TO_SEED} user queries with ${USERS_TO_SEED} users and benchmarks:
+  console.log(`Seeds ${queriesToSeed} user queries with ${usersToSeed} users and benchmarks:
     1. Time taken to seed data (insertion)
     2. Time taken to retrieve queries from users by branch name (only current members)
     `);
@@ -114,7 +88,7 @@ const main = async () => {
   console.log();
 
   await benchmarkSeeding();
-  await benchmarkQueriesPerBranch(QUERY_ROUNDS, 1);
+  await benchmarkQueriesPerBranch(1, 1);
   await explainAnalyzeQueriesForFirstUser();
 
   console.log(
@@ -131,3 +105,32 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
+
+const printDurationsStats = (durationsMs: number[]) => {
+  if (durationsMs.length === 0) {
+    console.error("No durations logged!");
+    return;
+  }
+  durationsMs.sort((a, b) => a - b);
+
+  const n = durationsMs.length;
+  const avg = durationsMs.reduce((sum, val) => sum + val, 0) / n;
+
+  const q1 = durationsMs[Math.floor(0.25 * (n - 1))];
+  const q2 = durationsMs[Math.floor(0.5 * (n - 1))]; // median
+  const q3 = durationsMs[Math.floor(0.75 * (n - 1))];
+
+  console.log(`
+    Count   : ${n}
+    Min     : ${durationsMs[0]} ms  ${"*".repeat(
+    Math.floor(durationsMs[0] / 100)
+  )}
+    1Q      : ${q1} ms ${"*".repeat(Math.floor(q1 / 100))}
+    2Q (Med): ${q2} ms ${"*".repeat(Math.floor(q2 / 100))}
+    3Q      : ${q3} ms ${"*".repeat(Math.floor(q3 / 100))}
+    Max     : ${durationsMs[n - 1]} ms ${"*".repeat(
+    Math.floor(durationsMs[n - 1] / 100)
+  )}
+    Avg     : ${avg.toFixed(0)} ms ${"*".repeat(Math.floor(avg / 100))}
+  `);
+};

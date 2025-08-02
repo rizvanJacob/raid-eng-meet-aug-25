@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://admin:password@localhost:5432/workshop"
+  url      = "postgresql://admin:password@localhost:5432/workshop?socket_timeout=300"
 }
 
 model User {
@@ -31,6 +31,8 @@ model Appointment {
     userId                  Int
     branch                  Branch                  @relation(fields: [branchId], references: [id])
     branchId                Int
+
+    @@index([branchId])     //depending on use case, you may wish to index userId too
 }
 
 model Branch {

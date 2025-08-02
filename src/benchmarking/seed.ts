@@ -1,24 +1,11 @@
-import { faker } from "@faker-js/faker";
+import { da, faker } from "@faker-js/faker";
 import { Prisma, Status } from "../../generated/prisma";
 import { prisma } from ".";
 import dayjs from "dayjs";
-
-const NUM_OF_BRANCHES = 30;
-//Ratio of deleted branches to active branches. Less than 1
-const DELETED_BRANCH_RATIO = 0.1;
-//Number of appointment titles
-const NUM_OF_TITLES = 30;
-//Oldest appointment start date in number of years ago
-const APPOINTMENTS_SINCE_YEARS_AGO = 3;
-const MIN_APPOINTMENT_DURATION_YEARS = 2;
-const MAX_APPOINTMENT_DURATION_YEARS = 4;
-//Ratio of queries to be assigned. Less than 1
-const ASSIGNED_QUERIES_RATIO = 0.6;
-//Ratio of users who can make queries to users who can be assigned queries. Less than 1
-const CAN_QUERY_RATIO = 0.8;
+import { assignedQueriesRatio, canQueryRatio, deletedBranchRatio, maxApptDurationYears, minApptDurationYears, numBranches, numTitles, oldestApptYearsAgo } from "./config";
 
 const TITLES: string[] = [];
-for (let i = 0; i < NUM_OF_TITLES; i++) {
+for (let i = 0; i < numTitles; i++) {
   TITLES.push(faker.person.jobType());
 }
 
@@ -29,7 +16,7 @@ const createBranches = (
   let branchNames: string[] = [];
   let counter = 0;
   while (branchNames.length < branchCount && counter < 10000) {
-    branchNames.push(faker.person.jobArea());
+    branchNames.push(`${faker.person.jobArea()} ${faker.location.city()}`);
     branchNames = faker.helpers.uniqueArray(branchNames, branchCount);
     counter++;
   }
@@ -53,7 +40,11 @@ const createUser = (): Prisma.UserCreateManyInput => {
   return {
     fullName: faker.person.fullName({ firstName, lastName }),
     contact: faker.phone.number({ style: "international" }),
-    email: faker.internet.email({ firstName, lastName }),
+    email: faker.internet.email({
+      firstName,
+      lastName,
+      allowSpecialCharacters: true,
+    }),
   };
 };
 
@@ -91,7 +82,7 @@ const createAppointments = (
     const isDeleted = deletedBranchIds.find((id) => branchId === id);
     const startDate = faker.date.between({
       from: dayjs()
-        .subtract(APPOINTMENTS_SINCE_YEARS_AGO, "year")
+        .subtract(oldestApptYearsAgo, "year")
         .toISOString(),
       to: dayjs().toISOString(),
     });
@@ -100,8 +91,8 @@ const createAppointments = (
       : dayjs(startDate)
           .add(
             faker.number.int({
-              min: MIN_APPOINTMENT_DURATION_YEARS,
-              max: MAX_APPOINTMENT_DURATION_YEARS - 1,
+              min: minApptDurationYears,
+              max: maxApptDurationYears - 1,
             }),
             "year"
           )
@@ -121,8 +112,9 @@ const createAppointments = (
 export const seedUsers = async (rows: number) => {
   return await prisma.$transaction(async (tx) => {
     const branches = await tx.branch.createManyAndReturn({
-      data: createBranches(NUM_OF_BRANCHES, DELETED_BRANCH_RATIO),
+      data: createBranches(numBranches, deletedBranchRatio),
     });
+    console.log(`> Seeded ${branches.length} branches`);
     const activeBranchesIds = branches
       .filter((branch) => !branch.isDeleted)
       .map(({ id }) => id);
@@ -136,32 +128,53 @@ export const seedUsers = async (rows: number) => {
     }
     const userIdObjects = await tx.user.createManyAndReturn({
       data: userData,
+      skipDuplicates: true,
     });
+    console.log(`> Seeded ${userData.length} users`);
     const userIds = userIdObjects.map(({ id }) => id);
 
-    await tx.appointment.createManyAndReturn({
+    const { count: appointmentCount } = await tx.appointment.createMany({
       data: createAppointments(userIds, activeBranchesIds, deletedBranchIds),
     });
+    console.log(`> Seeded ${appointmentCount} appointments`);
     return userIdObjects;
   });
 };
 
 export const seedQueries = async (rows: number, userIds: number[]) => {
+  console.log(`> Seeding ${rows} queries...`);
   const assignedValues = [
-    { value: true, weight: ASSIGNED_QUERIES_RATIO },
-    { value: false, weight: 1 - ASSIGNED_QUERIES_RATIO },
+    { value: true, weight: assignedQueriesRatio },
+    { value: false, weight: 1 - assignedQueriesRatio },
   ];
 
-  const canQueryCutoffIndex = Math.round(CAN_QUERY_RATIO * userIds.length);
+  const canQueryCutoffIndex = Math.round(canQueryRatio * userIds.length);
   const canQuery = userIds.slice(0, canQueryCutoffIndex);
   const canBeAssigned = userIds.slice(canQueryCutoffIndex, userIds.length - 1);
 
-  const data: Prisma.QueryCreateManyInput[] = [];
+  const createQueryDatas = (count: number) => {
+    const data: Prisma.QueryCreateManyInput[] = [];
+    for (let j = 0; j < count; j++) {
+      const isAssigned = faker.helpers.weightedArrayElement(assignedValues);
+      data.push(createQuery(canQuery, canBeAssigned, isAssigned));
+    }
+    return data;
+  };
 
-  for (let i = 0; i < rows; i++) {
-    const isAssigned = faker.helpers.weightedArrayElement(assignedValues);
-    data.push(createQuery(canQuery, canBeAssigned, isAssigned));
+  var rowsPerRound = 100_000;
+  var splitInto = Math.floor(rows / rowsPerRound);
+  for (let i = 0; i < splitInto; i++) {
+    const data = createQueryDatas(rowsPerRound);
+    const { count } = await prisma.query.createMany({
+      data,
+      skipDuplicates: true,
+    });
+    console.log(`> > Seeded ${i * rowsPerRound + count} queries`);
   }
-
-  return prisma.query.createMany({ data });
+  var remainder = rows - rowsPerRound * splitInto;
+  if (remainder > 0) {
+    const data = createQueryDatas(rowsPerRound);
+    await prisma.query.createMany({ data, skipDuplicates: true });
+  }
+  console.log(`> Seeded ${rows} queries`);
 };

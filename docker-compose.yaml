@@ -8,6 +8,7 @@ services:
       POSTGRES_DB: workshop
     ports:
       - "5432:5432"
+    # mem_limit: 1g
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "admin"]
       interval: 30s
@@ -15,6 +16,6 @@ services:
       retries: 5
     command: >
       postgres
-        -c shared_buffers=16MB
+        -c shared_buffers=8MB
         -c work_mem=1MB
         -c effective_cache_size=128MB
