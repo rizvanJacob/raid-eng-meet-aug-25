@@ -1,4 +1,4 @@
-import { prisma } from "./benchmarking";
+import { prisma } from "./database";
 import { Status } from "../generated/prisma";
 
 export const findUsers = async () => {

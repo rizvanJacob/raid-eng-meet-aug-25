@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Prisma, Status } from "../generated/prisma";
-import { prisma } from "./benchmarking";
+import { prisma } from "./database";
 import dayjs from "dayjs";
 import {
   assignedQueriesRatio,
@@ -51,6 +51,7 @@ const createUser = (): Prisma.UserCreateManyInput => {
   return {
     fullName: `${firstName} ${lastName}`,
     contact: faker.phone.number({ style: "international" }),
+    passwordHash: faker.string.hexadecimal({ length: 64 }),
     email: faker.internet.email({
       firstName,
       lastName,
@@ -161,7 +162,7 @@ const createAppointments = (
   return appointments;
 };
 
-export const seedUsers = async (rows: number) => {
+const seedUsers = async (rows: number) => {
   return await prisma.$transaction(
     async (tx) => {
       const branches = await tx.branch.createManyAndReturn({
@@ -196,7 +197,7 @@ export const seedUsers = async (rows: number) => {
   );
 };
 
-export const seedQueries = async (rows: number, userIds: number[]) => {
+const seedQueries = async (rows: number, userIds: number[]) => {
   console.log(`> Seeding ${rows} queries...`);
   const assignedValues = [
     { value: true, weight: assignedQueriesRatio },
@@ -232,4 +233,10 @@ export const seedQueries = async (rows: number, userIds: number[]) => {
     await prisma.query.createMany({ data, skipDuplicates: true });
   }
   console.log(`> Seeded ${rows} queries`);
+};
+
+export const seedDatabase = async (userCount: number, queryCount: number) => {
+  const users = await seedUsers(userCount);
+  const userIds = users.map(({ id }) => id);
+  await seedQueries(queryCount, userIds);
 };

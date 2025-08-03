@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
-import { PrismaClient } from "../generated/prisma/client";
 import path from "path";
+import { prisma } from "./database";
 
 type SchemaDefinition = {
   table_schema: string;
@@ -9,7 +9,6 @@ type SchemaDefinition = {
   data_type: string;
 };
 
-const prisma = new PrismaClient();
 
 const printSchema = async () => {
   const sql = readFileSync(

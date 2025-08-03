@@ -13,6 +13,7 @@ model User {
     fullName                String
     contact                 String                  @unique
     email                   String                  @unique
+    passwordHash            String
     appointments            Appointment[]
     campAccesses            CampAccess[]            @relation("user")
     sponsoredCampAccesses   CampAccess[]            @relation("sponsor")
