@@ -1,24 +1,30 @@
 # Useful Commands for Migration Workshop
 
-1. Create a new migration (SQL) based on the current schema:
+1. Generate the Prisma client based on the current schema:
+
+```bash
+npx prisma generate
+```
+
+2. Create a new migration (SQL) based on the current schema:
 
 ```bash
 npx prisma migrate dev --name <migration-name>
 ```
 
-2. Apply the migration to the database:
+3. Apply the migration to the database:
 
 ```bash
 npx prisma migrate deploy
 ```
 
-3. Check the status of migrations (only checks generated migrations):
+4. Check the status of migrations (only checks generated migrations):
 
 ```bash
 npx prisma migrate status
 ```
 
-4. Compare `schema.prisma` with the current database schema ([more options available](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-diff)):
+5. Compare `schema.prisma` with the current database schema ([more options available](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-diff)):
 
 ```bash
 npx prisma migrate diff \

@@ -10,7 +10,11 @@ import {
   usersToSeed,
 } from "../config";
 import { seedDatabase } from "../seed";
-import { limitConcurrentTasks, printDurationsStats } from "../utils";
+import {
+  limitConcurrentTasks,
+  printDurationsStats,
+  printLineBreak,
+} from "../utils";
 import { prisma, executeSqlFolder } from "../database";
 
 const benchmarkSeeding = async () => {
@@ -59,33 +63,25 @@ const explainAnalyzeQueriesForFirstUser = async () => {
   console.table(printout);
 };
 
-
-
 const main = async () => {
   prisma.$connect();
 
   const isSample = process.argv[process.argv.length - 1] === "sample";
   await executeSqlFolder(isSample ? sampleSqlDir : exerciseSqlDir);
-  console.log(
-    "==============================================================="
-  );
+  printLineBreak();
 
   console.log(`Seeds ${queriesToSeed} user queries with ${usersToSeed} users and benchmarks:
     1. Time taken to seed data (insertion)
     2. Time taken to retrieve queries from users by branch name (only current members)
     `);
-  console.log(
-    "==============================================================="
-  );
+  printLineBreak();
   console.log();
 
   await benchmarkSeeding();
   await benchmarkQueriesPerBranch(1);
   await explainAnalyzeQueriesForFirstUser();
 
-  console.log(
-    "==============================================================="
-  );
+  printLineBreak();
 };
 
 main()
@@ -97,4 +93,3 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
-

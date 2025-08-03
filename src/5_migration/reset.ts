@@ -1,25 +1,17 @@
 import { prisma } from "../database";
-import { queriesToSeed, usersToSeed } from "../config";
+import { usersToSeed } from "../config";
 import { seedDatabase } from "../seed";
+import { printLineBreak } from "../utils";
 
 const main = async () => {
   prisma.$connect();
 
-  console.log(
-    "==============================================================="
-  );
-
-  console.log(`Seeds ${queriesToSeed} user queries with ${usersToSeed} users`);
-  console.log(
-    "==============================================================="
-  );
+  printLineBreak();
+  console.log(`Seeds ${usersToSeed} users`);
   console.log();
 
-  await seedDatabase(usersToSeed, queriesToSeed);
-
-  console.log(
-    "==============================================================="
-  );
+  await seedDatabase(usersToSeed, 0);
+  printLineBreak();
 };
 
 main()

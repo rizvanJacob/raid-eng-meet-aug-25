@@ -1,6 +1,3 @@
-
-
-
 export const printDurationsStats = (durationsMs: number[]) => {
   if (durationsMs.length === 0) {
     console.error("No durations logged!");
@@ -51,4 +48,8 @@ export const limitConcurrentTasks = async <T>(
   );
   await Promise.all(runners);
   return results;
+};
+
+export const printLineBreak = () => {
+  console.log("=".repeat(50));
 };

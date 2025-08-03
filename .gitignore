@@ -2,3 +2,5 @@ node_modules/
 dist/
 .venv/
 /generated/prisma
+
+exercises/sample-solutions/5-migration/migrations/
