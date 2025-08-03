@@ -1,6 +1,6 @@
-import { prisma } from "./database";
-import { queriesToSeed, usersToSeed } from "./config";
-import { seedDatabase } from "./seed";
+import { prisma } from "../database";
+import { queriesToSeed, usersToSeed } from "../config";
+import { seedDatabase } from "../seed";
 
 const main = async () => {
   prisma.$connect();

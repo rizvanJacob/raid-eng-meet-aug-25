@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import path from "path";
-import { prisma } from "./database";
+import { prisma } from "../database";
 
 type SchemaDefinition = {
   table_schema: string;

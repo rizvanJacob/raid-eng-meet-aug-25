@@ -9,10 +9,11 @@
     "serve-slides": ".venv/bin/mkslides serve README.md",
     "slides": "concurrently -k -n static,mkslides -c green,cyan \"npm run serve-static\" \"npm run serve-slides\"",
     "restart-db": "docker-compose down && docker-compose up -d && wait-on -d 1000 tcp:5432",
-    "start-3": "npm run restart-db && prisma db push --schema=./exercises/3_physical_schema/schema.prisma && ts-node src/print-schema.ts && prisma studio --schema=./exercises/3_physical_schema/schema.prisma -b none",
-    "sample-3": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/3_physical_schema/schema.prisma && ts-node src/print-schema.ts && prisma studio --schema=./exercises/sample-solutions/3_physical_schema/schema.prisma -b none",
-    "start-4": "npm run restart-db && prisma db push --schema=./exercises/4_indexing/schema.prisma && ts-node src/benchmarking.ts && prisma studio --schema=./exercises/sample-solutions/4_indexing/schema.prisma -b none",
-    "sample-4": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/4_indexing/schema.prisma && ts-node src/benchmarking.ts sample && prisma studio --schema=./exercises/sample-solutions/4_indexing/schema.prisma -b none"
+    "start-3": "npm run restart-db && prisma db push --schema=./exercises/3_physical_schema/schema.prisma && ts-node src/3_schema/index.ts && prisma studio --schema=./exercises/3_physical_schema/schema.prisma -b none",
+    "sample-3": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/3_physical_schema/schema.prisma && ts-node src/3_schema/index.ts && prisma studio --schema=./exercises/sample-solutions/3_physical_schema/schema.prisma -b none",
+    "start-4": "npm run restart-db && prisma db push --schema=./exercises/4_indexing/schema.prisma && ts-node src/4_benchmarking/index.ts && prisma studio --schema=./exercises/sample-solutions/4_indexing/schema.prisma -b none",
+    "sample-4": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/4_indexing/schema.prisma && ts-node src/4_benchmarking/index.ts sample && prisma studio --schema=./exercises/sample-solutions/4_indexing/schema.prisma -b none",
+    "reset-5": "npm run restart-db && prisma db push --schema=./exercises/5_migration/schema.prisma && ts-node src/5_migration/reset.ts && npx prisma migrate resolve --applied 0_init && prisma studio --schema=./exercises/5_migration/schema.prisma -b none"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,9 @@
     "dayjs": "^1.11.13",
     "dotenv": "^17.2.1",
     "express": "^5.1.0"
+  },
+  "prisma": {
+    "schema": "./exercises/5_migration/schema.prisma"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",

@@ -387,7 +387,7 @@ model Address {
   - Query plans for retrieving queries by user
 
 - Amend the schema to improve query performance
-  
+
   - Re-run `npm run start-4` to observe the changes
 
 - Run `npm run sample-4` to observe the [sample solution](exercises/sample-solutions/4_indexing/schema.prisma)
@@ -401,3 +401,56 @@ model Address {
 - Learn the basics of [migration with Prisma](https://www.prisma.io/docs/guides/data-migration)
 - Applicable to other tools like Liquibase, Flyway, or raw SQL migrations
 
+---
+
+### Prisma Migrate Tool
+
+- [Introspect an existing schema into schema.prisma](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#db-pull)
+- [Generate migration files (SQL) based on schema.prisma changes](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-diff)
+- [Apply migrations to the database](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-deploy)
+- [Track which migrations are applied to the database](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-resolve)
+
+---
+
+### Expand and Contract Pattern
+
+- Expand: Add new features or capabilities
+- Contract: Remove deprecated or unused features
+- Incremental Schema Changes without data loss
+- [Further reading](https://www.prisma.io/docs/guides/data-migration)
+
+---
+
+### Exercise 5: Schema Migration
+
+- Migration of schema to incorporate external identity provider (e.g. Lectern)
+- Lectern provides:
+  - Authentication workflow
+  - User details in each request
+  - API to fetch user details by Id
+- Desired schema change:
+
+```mermaid
+erDiagram
+current [User-Current]{
+  Long id
+  String contact
+  String email
+  String name
+  String passwordHash
+}
+
+desired [User-Desired]{
+  Long id
+  String lecternUserId
+}
+```
+
+### Exercise 5: Schema Migration - Instructions
+
+- Run `npx prisma migrate resolve --applied 0_init` to baseline the db from the sample-4
+- Run `npm run reset-5` to return to this [state](./exercises/5_migration/README.md)
+- "Expand" the [schema](./exercises/5_migration/schema.prisma) 
+- Create and apply the migration
+- Run `npm run start-5` to simulate the "migration period" where users must log-in with Lectern + user and password
+- "Contract" the schema, create and apply the migration

@@ -2,16 +2,16 @@ import dayjs from "dayjs";
 import {
   findActiveBranchNames,
   findQueriesByActiveMembersByBranchName,
-} from "./queries";
+} from "../queries";
 import {
   exerciseSqlDir,
   queriesToSeed,
   sampleSqlDir,
   usersToSeed,
-} from "./config";
-import { seedDatabase } from "./seed";
-import { limitConcurrentTasks, printDurationsStats } from "./utils";
-import { prisma, executeSqlFolder } from "./database";
+} from "../config";
+import { seedDatabase } from "../seed";
+import { limitConcurrentTasks, printDurationsStats } from "../utils";
+import { prisma, executeSqlFolder } from "../database";
 
 const benchmarkSeeding = async () => {
   const seedLabel = `Seeding completed in`;
