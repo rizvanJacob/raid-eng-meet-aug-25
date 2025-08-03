@@ -28,9 +28,9 @@ _RAiD Engineering Meetup Aug 2025_
 ## Instructions
 
 1. Clone or fork this repository
-2. [Workshop Scenario](materials/0_Workshop_Scenario.md)
+2. [Workshop Scenario](exercises/Workshop-Scenario.md)
 3. Attempt the exercises along the way
-   - Check out the [sample solutions](materials/sample-solutions)
+   - Check out the [sample solutions](exercises/sample-solutions)
 4. Ask questions - raise a hand or ask your neighbor
 5. If this is too easy for you, help a neighbor
 
@@ -139,7 +139,7 @@ erDiagram
 
 - Powerpoint, slides, miro, whiteboard
 - [Draw.io](https://draw.io)
-- [**Mermaid.js**](https://mermaid.js.org/)
+- [Mermaid.js](https://mermaid.js.org/)
   - Natively supported by github & gitlab
   - [VS Code extension](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
   - [Online editor](https://mermaid.live/)
@@ -148,20 +148,20 @@ erDiagram
 
 ### Exercise 1: Designing Conceptual Schema
 
-- Design a conceptual schema for the [workshop scenario](materials/0_Workshop_Scenario.md)
+- Design a conceptual schema for the [workshop scenario](exercises/Workshop-Scenario.md)
 - Use any tool as you prefer
 - Skip relationship types for now
-- [Sample solution](exercises/sample-solutions/1_Conceptual_Schema.md)
+- [Sample solution](exercises/sample-solutions/1_2_schema_diagrams/1_Conceptual_Schema.md)
 
 ---
 
 ### Exercise 2: Designing Logical Schema
 
-- Design a logical schema for the [workshop scenario](materials/0_Workshop_Scenario.md)
+- Design a logical schema for the [workshop scenario](exercises/Workshop-Scenario.md)
 - Think of other unexplicit requirements
   - Edge cases
   - Non-functional
-- [Sample solution](`2_Logical_Schema.md`)
+- [Sample solution](exercises/sample-solutions/1_2_schema_diagrams/2_Logical_Schema.md)
 
 ---
 
@@ -331,15 +331,15 @@ model Address {
 
 ### Exercise 3: Implement Physical Schema with Prisma
 
-- Design and implement physical schema for the [workshop scenario](materials/0_Workshop_Scenario.md)
+- Design and implement physical schema for the [workshop scenario](exercises/Workshop-Scenario.md)
 
-- Use Prisma to [define your models](./exercises/3_physical_schema.prisma)
+- Use Prisma to [define your models](./exercises/3_physical_schema/schema.prisma)
 
-- Run `npm run start-3` to observe the schema generation
+- `$ npm run start-3` to observe the schema generation
 
-- See [prisma instructions](materials/3_Prisma_Instructions.md) to generate and use the client
+- See [prisma docs](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction) for instructions to generate and use the client
 
-- Run `npm run sample-3` to observe the [sample solution](./exercises/sample-solutions/3_physical_schema.prisma)
+- `$ npm run sample-3` to observe the [sample solution](./exercises/sample-solutions/3_physical_schema/schema.prisma)
 
 ---
 
@@ -380,7 +380,7 @@ model Address {
 
 - Have a look at the [exercise schema](exercises/4_indexing/schema.prisma)
 
-- Run `npm run start-4` to seed the data and benchmark the performance. Observe:
+- `$ npm run start-4` to seed the data and benchmark the performance. Observe:
 
   - Time taken to seed data
   - Time taken to retrieve queries by user
@@ -388,9 +388,9 @@ model Address {
 
 - Amend the schema to improve query performance
 
-  - Re-run `npm run start-4` to observe the changes
+  - `$ npm run start-4` to observe the changes
 
-- Run `npm run sample-4` to observe the [sample solution](exercises/sample-solutions/4_indexing/schema.prisma)
+- `$ npm run sample-4` to observe the [sample solution](exercises/sample-solutions/4_indexing/schema.prisma)
 
 ---
 
@@ -424,11 +424,16 @@ model Address {
 ### Exercise 5: Schema Migration
 
 - Migration of schema to incorporate external identity provider (e.g. Lectern)
+
 - Lectern provides:
+
   - Authentication workflow
   - User details in each request
   - API to fetch user details by Id
-- Desired schema change:
+
+---
+
+### Desired schema change:
 
 ```mermaid
 erDiagram
@@ -446,11 +451,42 @@ desired [User-Desired]{
 }
 ```
 
+---
+
 ### Exercise 5: Schema Migration - Instructions
 
-- Run `npx prisma migrate resolve --applied 0_init` to baseline the db from the sample-4
-- Run `npm run reset-5` to return to this [state](./exercises/5_migration/README.md)
-- "Expand" the [schema](./exercises/5_migration/schema.prisma) 
+- `$ npx prisma migrate resolve --applied 0_init` to baseline the db from the sample-4
+
+- `$ npm run reset-5` to return to this [state](./exercises/5_migration/README.md)
+
+- "Expand" the [schema](./exercises/5_migration/schema.prisma)
+
 - Create and apply the migration
-- Run `npm run start-5` to simulate the "migration period" where users must log-in with Lectern + user and password
+
+- `$ npm run start-5` to simulate the "migration period" where users must log-in with Lectern + user and password
+
 - "Contract" the schema, create and apply the migration
+
+- `$ npm run sample-5` to observe the [sample solution](./exercises/sample-solutions/5_migration/README.md)
+
+- [Useful commands](./exercises/5_migration/README.md)
+
+---
+
+### Recap
+
+- Conceptual, Logical, Physical Schema
+
+- Database Normalization
+
+- Schema implementation with Prisma
+
+- Indexing for performance
+
+- Migrations with Prisma
+
+---
+
+Thank You!
+
+# Questions?
