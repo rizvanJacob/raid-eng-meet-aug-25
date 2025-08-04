@@ -327,7 +327,7 @@ _See previous examples for conceptual & logical schema_
 
 ### [Prisma ORM](https://www.prisma.io/)
 
-- Mordern, Typesafe ORM in RAiD's stack
+- Modern, Typesafe ORM in RAiD's stack
 
 - Provides an API to [define your model in code](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)
 
@@ -391,7 +391,7 @@ model Address {
 
 - Speeds up data retrieval
 
-- But, adds overhead to modicifications
+- But, adds overhead to modifications
 
 - Create indexes via:
 
