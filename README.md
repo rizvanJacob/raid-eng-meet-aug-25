@@ -7,9 +7,13 @@ _RAiD Engineering Meetup Aug 2025_
 ## Objectives
 
 1. From real-world stories to database schema
+
 2. Clean, efficient, and easy to change design
+
 3. Confidence with database design tools
+
 4. Improve database speed
+
 5. Change database schema without breaking things
 
 ---
@@ -17,10 +21,15 @@ _RAiD Engineering Meetup Aug 2025_
 ## Agenda
 
 1. [Introduction to Schema and Tools](#introduction-to-schema-and-tools)
+
 2. [Designing Conceptual Schema](#conceptual-schema)
+
 3. [Designing Logical Schema](#logical-schema)
+
 4. [Implementing Physical Schema with Prisma](#physical-schema)
+
 5. [Database Indexing](#indexing)
+
 6. [Schema Change and Migrations](#migrations)
 
 ---
@@ -28,10 +37,15 @@ _RAiD Engineering Meetup Aug 2025_
 ## Instructions
 
 1. Clone or fork this repository
+
 2. [Workshop Scenario](exercises/Workshop-Scenario.md)
+
 3. Attempt the exercises along the way
+
    - Check out the [sample solutions](exercises/sample-solutions)
+
 4. Ask questions - raise a hand or ask your neighbor
+
 5. If this is too easy for you, help a neighbor
 
 ---
@@ -66,8 +80,10 @@ _RAiD Engineering Meetup Aug 2025_
 ### Conceptual Schema
 
 - High-level design of **_entities_** and **_relationships_**
+
   - **Entity**: type of data
   - [**Relationship**](https://miro.medium.com/v2/resize:fit:4800/format:webp/0*HbaPwlVdszf8etER.png): how entities are connected
+
 - Map out the entities represented in the system
 
 ```mermaid
@@ -88,9 +104,11 @@ erDiagram
 ### Logical Schema
 
 - Medium level design, adding **_attributes_** and **_keys_** to entities
+
   - **Attribute**: data stored in an entity
   - **Primary Key**: unique identifier for an entity
   - **Foreign Key**: reference to another entity's primary key
+
 - Define where and how data is stored
 
 ```mermaid
@@ -126,7 +144,9 @@ erDiagram
 ### Physical Schema
 
 - Full implementation details
+
 - Dependent on the database system
+
 - Includes:
   - Table & Column names
   - Data types (specific to the db, e.g. `VARCHAR(255)`)
@@ -138,7 +158,9 @@ erDiagram
 ### Tools for Schema Design
 
 - Powerpoint, slides, miro, whiteboard
+
 - [Draw.io](https://draw.io)
+
 - [Mermaid.js](https://mermaid.js.org/)
   - Natively supported by github & gitlab
   - [VS Code extension](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
@@ -149,8 +171,11 @@ erDiagram
 ### Exercise 1: Designing Conceptual Schema
 
 - Design a conceptual schema for the [workshop scenario](exercises/Workshop-Scenario.md)
+
 - Use any tool as you prefer
+
 - Skip relationship types for now
+
 - [Sample solution](exercises/sample-solutions/1_2_schema_diagrams/1_Conceptual_Schema.md)
 
 ---
@@ -158,9 +183,12 @@ erDiagram
 ### Exercise 2: Designing Logical Schema
 
 - Design a logical schema for the [workshop scenario](exercises/Workshop-Scenario.md)
+
 - Think of other unexplicit requirements
+
   - Edge cases
   - Non-functional
+
 - [Sample solution](exercises/sample-solutions/1_2_schema_diagrams/2_Logical_Schema.md)
 
 ---
@@ -168,6 +196,7 @@ erDiagram
 ### Database Normalization
 
 - Eliminate duplicates
+
 - Normalization Forms:
 
   1. [First Normal Form](#first-normal-form-1nf): "No repeating groups"
@@ -184,7 +213,8 @@ erDiagram
      - No column that can be derived from another column
 
 - Evaluated **_per relationship_**
-  -v-
+
+-v-
 
 #### First Normal Form (1NF)
 
@@ -397,8 +427,11 @@ model Address {
 ### Migrations
 
 - Track changes to the schema over time
+
 - Ensure data integrity during schema changes
+
 - Learn the basics of [migration with Prisma](https://www.prisma.io/docs/guides/data-migration)
+
 - Applicable to other tools like Liquibase, Flyway, or raw SQL migrations
 
 ---
@@ -406,17 +439,23 @@ model Address {
 ### Prisma Migrate Tool
 
 - [Introspect an existing schema into schema.prisma](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#db-pull)
+
 - [Generate migration files (SQL) based on schema.prisma changes](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-diff)
+
 - [Apply migrations to the database](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-deploy)
+
 - [Track which migrations are applied to the database](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#migrate-resolve)
 
 ---
 
 ### Expand and Contract Pattern
 
-- Expand: Add new features or capabilities
-- Contract: Remove deprecated or unused features
+- _Expand_: Add new features or capabilities
+
+- _Contract_: Remove deprecated or unused features
+
 - Incremental Schema Changes without data loss
+
 - [Further reading](https://www.prisma.io/docs/guides/data-migration)
 
 ---
@@ -426,7 +465,6 @@ model Address {
 - Migration of schema to incorporate external identity provider (e.g. Lectern)
 
 - Lectern provides:
-
   - Authentication workflow
   - User details in each request
   - API to fetch user details by Id
