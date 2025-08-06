@@ -16,7 +16,7 @@
     "studio-5": "prisma studio --schema=./exercises/5_migration/schema.prisma -b none",
     "reset-5": "npm run restart-db && prisma db push --schema=./exercises/5_migration/schema.prisma && ts-node src/5_migration/reset.ts && npx prisma migrate resolve --applied 0_init",
     "start-5": "ts-node src/5_migration/simulate-usage.ts",
-    "sample-5": "npm run reset-5 && ts-node src/5_migration/cli-sample.ts && prisma studio --schema=./exercises/sample-solutions/5_migration/contract.prisma"
+    "sample-5": "npm run restart-db && prisma db push --schema=./exercises/sample-solutions/5_migration/baseline.prisma && ts-node src/5_migration/reset.ts && npx prisma migrate resolve --applied 0_init && ts-node src/5_migration/cli-sample.ts && prisma studio --schema=./exercises/sample-solutions/5_migration/contract.prisma"
   },
   "repository": {
     "type": "git",
