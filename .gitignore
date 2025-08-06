@@ -3,4 +3,6 @@ dist/
 .venv/
 /generated/prisma
 
-exercises/sample-solutions/5-migration/migrations/
+exercises/sample-solutions/5_migration/migrations/*
+exercises/sample-solutions/5_migration/migrations/0_init/
+exercises/sample-solutions/5_migration/migrations/0_init/**
