@@ -3,28 +3,40 @@ export const printDurationsStats = (durationsMs: number[]) => {
     console.error("No durations logged!");
     return;
   }
-  durationsMs.sort((a, b) => a - b);
 
+  durationsMs.sort((a, b) => a - b);
   const n = durationsMs.length;
   const avg = durationsMs.reduce((sum, val) => sum + val, 0) / n;
 
-  const q1 = durationsMs[Math.floor(0.25 * (n - 1))];
-  const q2 = durationsMs[Math.floor(0.5 * (n - 1))]; // median
-  const q3 = durationsMs[Math.floor(0.75 * (n - 1))];
+  // Compute percentiles
+  const getPercentile = (p: number) => {
+    const index = Math.floor((p / 100) * (n - 1));
+    return durationsMs[index];
+  };
 
-  console.log(`
-    Count   : ${n}
-    Min     : ${durationsMs[0]} ms  ${"*".repeat(
-    Math.floor(durationsMs[0] / 100)
-  )}
-    1Q      : ${q1} ms ${"*".repeat(Math.floor(q1 / 100))}
-    2Q (Med): ${q2} ms ${"*".repeat(Math.floor(q2 / 100))}
-    3Q      : ${q3} ms ${"*".repeat(Math.floor(q3 / 100))}
-    Max     : ${durationsMs[n - 1]} ms ${"*".repeat(
-    Math.floor(durationsMs[n - 1] / 100)
-  )}
-    Avg     : ${avg.toFixed(0)} ms ${"*".repeat(Math.floor(avg / 100))}
-  `);
+  const stats: { label: string; value: number }[] = [
+    { label: "Min", value: durationsMs[0] },
+    ...Array.from({ length: 9 }, (_, i) => {
+      const p = i + 1;
+      return { label: `${p}P`, value: getPercentile(p) };
+    }),
+    { label: "Max", value: durationsMs[n - 1] },
+    { label: "Avg", value: avg },
+  ];
+
+  // Find max label and value length for padding
+  const labelPad = Math.max(...stats.map((s) => s.label.length));
+  const valuePad = Math.max(...stats.map((s) => s.value.toFixed(0).length));
+
+  // Print results
+  console.log(`\n    Count   : ${n}`);
+  for (const { label, value } of stats) {
+    const rounded = Math.round(value);
+    const stars = "*".repeat(Math.floor(rounded / 50));
+    const paddedLabel = label.padEnd(labelPad);
+    const paddedValue = `${rounded}`.padStart(valuePad);
+    console.log(`    ${paddedLabel} : ${paddedValue} ms  ${stars}`);
+  }
 };
 
 export const limitConcurrentTasks = async <T>(
