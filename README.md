@@ -1,6 +1,8 @@
+_RAiD Engineering Meet Up - Aug 25_
+
 # Data Schema Modelling Workshop
 
-_RAiD Engineering Meetup Aug 2025_
+### `github.com/rizvanJacob/raid-eng-meet-aug-25`
 
 ---
 
