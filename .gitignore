@@ -6,3 +6,5 @@ dist/
 exercises/sample-solutions/5_migration/migrations/*
 exercises/sample-solutions/5_migration/migrations/0_init/
 exercises/sample-solutions/5_migration/migrations/0_init/**
+
+formsg_secret_key.txt
