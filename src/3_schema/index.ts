@@ -9,10 +9,9 @@ type SchemaDefinition = {
   data_type: string;
 };
 
-
 const printSchema = async () => {
   const sql = readFileSync(
-    path.join(__dirname, "../sql/print-schema.sql"),
+    path.join(__dirname, "../../sql/print-schema.sql"),
     "utf-8"
   );
   var schemaPrintout = (await prisma.$queryRawUnsafe(
