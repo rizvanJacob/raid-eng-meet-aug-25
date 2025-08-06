@@ -527,6 +527,12 @@ desired [User-Desired]{
 
 ---
 
-Thank You!
-
 # Questions?
+
+---
+
+# Thank You!
+
+Please provide [feedback](https://form.gov.sg/6892ef205743b62e919c4702)
+
+<img src="https___go.gov.sg_raid-eng-meetup-aug25.png" alt="Feedback QR Code" style="width:400px;"/>
